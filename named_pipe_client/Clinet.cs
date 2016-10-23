@@ -23,17 +23,25 @@ namespace named_pipe_client
         static void PipeClient(string serverName, string pipeName)
         {
             using (NamedPipeClientStream pipeClient = new NamedPipeClientStream(serverName,
-                pipeName, PipeDirection.In))
+                pipeName, PipeDirection.Out))
             {
+                Console.WriteLine("Wait for pipe server connection://{0}/{1}", serverName, pipeName);
                 pipeClient.Connect();
-                using (StreamReader sr = new StreamReader(pipeClient))
+                Console.WriteLine("Connected to server.");
+                using (StreamWriter sw = new StreamWriter(pipeClient))
                 {
-                    string temp;
-                    while ((temp = sr.ReadLine()) != null)
-                    {
-                        Console.WriteLine("Received from server:{0}", temp);
-                    }
+                    sw.AutoFlush = true;
+                    string send = OpenFile.ReadJson();
+                    sw.WriteLine(send as object);
                 }
+                //using (StreamReader sr = new StreamReader(pipeClient))
+                //{
+                //    string temp;
+                //    while ((temp = sr.ReadLine()) != null)
+                //    {
+                //        Console.WriteLine("Received from server:{0}", temp);
+                //    }
+                //}
             }
         }
     }

@@ -26,5 +26,14 @@ namespace Common
                 Console.WriteLine(i);
             }
         }
+
+        public static string ReadJson()
+        {
+            using (StreamReader sr = new StreamReader("test.json"))
+            {
+                string fileContent = sr.ReadToEnd();
+                return fileContent;
+            }
+        }
     }
 }

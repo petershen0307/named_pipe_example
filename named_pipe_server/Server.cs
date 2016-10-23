@@ -10,21 +10,29 @@ namespace named_pipe_server
         {
             string pipeName = "mypipe";
             using (NamedPipeServerStream pipeServer = new NamedPipeServerStream(pipeName,
-                PipeDirection.Out))
+                PipeDirection.In))
             {
                 Console.WriteLine("pipe object created, wait for client connection.");
                 pipeServer.WaitForConnection();
                 Console.WriteLine("Client connected.");
                 try
                 {
-                    using (StreamWriter sw = new StreamWriter(pipeServer))
+                    using (StreamReader sr = new StreamReader(pipeServer))
                     {
-                        sw.AutoFlush = true;
-                        string send = Console.ReadLine();
-                        sw.WriteLine(send as object);
+                        string temp;
+                        while ((temp = sr.ReadLine()) != null)
+                        {
+                            Console.WriteLine("Received from client:{0}", temp);
+                        }
                     }
+                    //using (StreamWriter sw = new StreamWriter(pipeServer))
+                    //{
+                    //    sw.AutoFlush = true;
+                    //    string send = "Thanks client!";
+                    //    sw.WriteLine(send as object);
+                    //}
                 }
-                catch(IOException e)
+                catch (IOException e)
                 {
                     Console.WriteLine("exception:" + e.ToString());
                 }
